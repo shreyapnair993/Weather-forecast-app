@@ -1,3 +1,5 @@
+/* WeatherWhale - Tailwind Configuration */
+/* Custom colors, fonts, and theme settings */
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   /* Tell Tailwind which files to scan for class names */
