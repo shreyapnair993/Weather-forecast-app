@@ -73,6 +73,7 @@ function getRecentCities() {
 }
 
 /* Add a new city to the front of the saved list */
+/* Saves up to 8 recent cities in localStorage */
 function saveCity(cityName) {
   let cities = getRecentCities();
 
@@ -360,7 +361,6 @@ function applyRainyTheme(condition) {
 
 /* ====================================================
    SECTION 8: RENDER FUNCTIONS
-   Functions that update the UI with weather data
    ==================================================== */
 
 /* --- Render today's main weather card --- */
@@ -552,7 +552,6 @@ function renderForecastGrid(forecastData) {
 
 /* ====================================================
    SECTION 9: DATA PROCESSING HELPER
-   Groups the 3-hourly forecast list into one per day
    ==================================================== */
 
 function getDailyMap(forecastList) {
