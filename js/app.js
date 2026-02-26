@@ -9,7 +9,6 @@ const ICON_URL      = 'https://openweathermap.org/img/wn/';
 
 /* ----------------------------------------------------
    GLOBAL STATE
-   Variables that store data across function calls
    ---------------------------------------------------- */
 let currentUnit   = 'C';   // Temperature unit: 'C' or 'F'
 let rawTempC      = null;  // Stored raw celsius temp (for toggling unit)
@@ -18,7 +17,6 @@ let rawFeelsLikeC = null;  // Stored raw feels-like temp in celsius
 
 /* ----------------------------------------------------
    DOM REFERENCES
-   Grab all needed elements once at the top
    ---------------------------------------------------- */
 const cityInput       = document.getElementById('cityInput');
 const clearBtn        = document.getElementById('clearBtn');
@@ -62,8 +60,7 @@ showHeaderDate();
 
 
 /* ====================================================
-   SECTION 2: RECENT CITIES (using localStorage)
-   Stores up to 8 previously searched cities
+   SECTION 2: RECENT CITIES
    ==================================================== */
 
 /* Read saved cities array from localStorage */
@@ -157,13 +154,12 @@ clearBtn.addEventListener('click', () => {
   cityInput.value = '';
   clearBtn.classList.add('hidden');
   cityInput.focus();
-  showRecentDropdown(); /* Re-show recent dropdown after clearing */
+  showRecentDropdown();
 });
 
 
 /* ====================================================
    SECTION 3: ERROR & ALERT HANDLING
-   All shown in UI — no JS alert() used anywhere
    ==================================================== */
 
 /* Show the error banner with a title and message */
@@ -224,8 +220,8 @@ function setLoading(isLoading) {
 
 /* ====================================================
    SECTION 5: INPUT VALIDATION
-   Checks before making any API call
    ==================================================== */
+/* Validates city name before making API call */
 
 function validateInput(city) {
   /* Empty input check */
