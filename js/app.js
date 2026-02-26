@@ -421,6 +421,7 @@ function updateTemperatureDisplay() {
 }
 
 /* Called when user clicks °C or °F */
+/* Toggles temperature between Celsius and Fahrenheit */
 function setUnit(unit) {
   currentUnit = unit;
 
