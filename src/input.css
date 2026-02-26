@@ -1,0 +1,207 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+/* ================================================
+   CUSTOM BASE STYLES
+   ================================================ */
+
+@layer base {
+
+  /* Import Google Font */
+  @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800;900&display=swap');
+
+  /* Apply base font and background to everything */
+  body {
+    font-family: 'Nunito', sans-serif;
+    background-color: #e8f4fd;
+    color: #1e3a5f;
+    transition: background-color 0.6s ease, color 0.4s ease;
+  }
+
+  /* Smooth transitions on all interactive elements */
+  button, input {
+    transition: all 0.2s ease;
+  }
+}
+
+
+/* ================================================
+   CUSTOM COMPONENT STYLES
+   ================================================ */
+
+@layer components {
+
+  /* ---- Search Input ---- */
+  .search-input {
+    @apply w-full px-4 py-3 rounded-xl border-2 border-sky-200 bg-white text-sky-900
+           placeholder-sky-300 outline-none text-sm font-semibold;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .search-input:focus {
+    @apply border-sky-400;
+    box-shadow: 0 0 0 3px rgba(74, 144, 217, 0.2);
+  }
+
+  /* ---- Primary Button (Search) ---- */
+  .btn-primary {
+    @apply bg-sky-500 hover:bg-sky-600 text-white font-bold
+           px-5 py-3 rounded-xl text-sm cursor-pointer;
+    box-shadow: 0 4px 12px rgba(74, 144, 217, 0.35);
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(74, 144, 217, 0.4);
+  }
+
+  /* ---- Location Button ---- */
+  .btn-location {
+    @apply bg-white hover:bg-sky-50 text-sky-600 font-bold
+           border-2 border-sky-300 px-5 py-2.5 rounded-xl text-sm cursor-pointer;
+  }
+
+  /* ---- Weather Stat Card (humidity, wind etc.) ---- */
+  .stat-card {
+    @apply bg-white rounded-xl2 px-4 py-3 flex items-center gap-3;
+    box-shadow: 0 4px 16px rgba(74, 144, 217, 0.12);
+  }
+
+  /* ---- 5-Day Forecast Day Card ---- */
+  .forecast-card {
+    @apply bg-white rounded-xl2 p-4 text-center flex flex-col items-center gap-2;
+    box-shadow: 0 4px 16px rgba(74, 144, 217, 0.12);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .forecast-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(74, 144, 217, 0.22);
+  }
+
+  /* ---- Today's main weather card ---- */
+  .today-card {
+    @apply bg-white rounded-xl3 p-6 relative overflow-hidden;
+    box-shadow: 0 4px 20px rgba(74, 144, 217, 0.15);
+  }
+
+  /* ---- Error message box ---- */
+  .error-box {
+    @apply bg-red-50 border-2 border-red-200 text-red-700
+           rounded-xl px-4 py-3 flex items-start gap-3 text-sm font-semibold;
+  }
+
+  /* ---- Heat alert box ---- */
+  .heat-box {
+    @apply bg-orange-50 border-2 border-orange-300 text-orange-700
+           rounded-xl px-4 py-3 flex items-center gap-3 text-sm font-semibold;
+  }
+
+  /* ---- Recent cities dropdown ---- */
+  .dropdown-box {
+    @apply absolute top-full left-0 right-0 mt-1 bg-white rounded-xl overflow-hidden z-50;
+    box-shadow: 0 8px 24px rgba(74, 144, 217, 0.2);
+    border: 2px solid #b3d9f7;
+  }
+
+  /* ---- Temperature unit toggle buttons ---- */
+  .unit-btn {
+    @apply px-3 py-1 text-sm font-bold rounded-lg cursor-pointer;
+    transition: background 0.2s, color 0.2s;
+  }
+
+  .unit-btn.active {
+    @apply bg-sky-500 text-white;
+  }
+
+  .unit-btn:not(.active) {
+    @apply bg-sky-100 text-sky-500;
+  }
+
+  /* ---- Section label (like "5-Day Forecast") ---- */
+  .section-label {
+    @apply text-xs font-black uppercase tracking-widest text-sky-400 mb-3;
+  }
+}
+
+
+/* ================================================
+   CUSTOM UTILITY STYLES
+   ================================================ */
+
+@layer utilities {
+
+  /* Fade + slide up animation for cards appearing */
+  .animate-fade-up {
+    animation: fadeUp 0.4s ease both;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Staggered delays for forecast cards */
+  .delay-1 { animation-delay: 0.05s; }
+  .delay-2 { animation-delay: 0.10s; }
+  .delay-3 { animation-delay: 0.15s; }
+  .delay-4 { animation-delay: 0.20s; }
+  .delay-5 { animation-delay: 0.25s; }
+
+  /* Spinning loader */
+  .spin {
+    animation: spin 0.8s linear infinite;
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  /* Rain effect overlay — shown when weather is rainy */
+  .rain-overlay {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    background-image: repeating-linear-gradient(
+      to bottom,
+      transparent 0px,
+      transparent 8px,
+      rgba(100, 160, 220, 0.06) 9px,
+      transparent 10px
+    );
+    animation: rainDrop 0.6s linear infinite;
+  }
+
+  @keyframes rainDrop {
+    from { background-position: 0 0; }
+    to   { background-position: 0 20px; }
+  }
+
+  /* Rainy body theme — dark blue sky */
+  body.rainy {
+    background-color: #1a2744;
+    color: #c8dff5;
+  }
+
+  body.rainy .today-card,
+  body.rainy .forecast-card,
+  body.rainy .stat-card {
+    background-color: #1e3460;
+    color: #c8dff5;
+  }
+
+  body.rainy .search-input {
+    background-color: #1e3460;
+    border-color: #2c4a7c;
+    color: #c8dff5;
+  }
+
+  body.rainy .dropdown-box {
+    background-color: #1e3460;
+    border-color: #2c4a7c;
+    color: #c8dff5;
+  }
+}

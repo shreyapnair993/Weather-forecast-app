@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WeatherWhale — Weather Forecast</title>
+  <link rel="stylesheet" href="src/output.css" />
+
+  <!-- Google Fonts-->
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800;900&display=swap"
+    rel="stylesheet" />
+</head>
+
+<body id="appBody" class="min-h-screen">
+
+  <!-- ================================================
+       RAIN OVERLAY
+       ================================================ -->
+  <div id="rainOverlay" class="rain-overlay hidden"></div>
+
+  <!-- ================================================
+       HEADER / NAVBAR
+       Shows the app name and current date
+       ================================================ -->
+  <header class="sticky top-0 z-50 bg-white bg-opacity-80 backdrop-blur-sm border-b border-sky-100">
+    <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
+
+      <!-- Logo + App Name -->
+      <div class="flex items-center gap-2">
+        <img src="images/logo.png" alt="WeatherWhale Logo" class="w-16 h-16 object-contain" />
+        <span class="text-xl font-black text-sky-600 tracking-tight">WeatherWhale</span>
+      </div>
+
+      <!-- Today's date shown here -->
+      <p id="headerDate" class="text-xs font-semibold text-sky-400 hidden sm:block"></p>
+
+    </div>
+  </header>
+
+
+  <!-- ================================================
+       MAIN CONTENT AREA
+       ================================================ -->
+  <main class="max-w-5xl mx-auto px-4 py-6 relative z-10">
+
+
+    <!-- ================================================
+         SEARCH SECTION
+         City search input + location button
+         ================================================ -->
+    <section class="mb-6">
+
+      <!-- Page heading -->
+      <h1 class="text-3xl md:text-4xl font-black text-sky-800 mb-1">
+        Your Weather, <span class="text-sky-500">Today.</span>
+      </h1>
+      <p class="text-sm text-sky-400 font-semibold mb-4">Search any city or use your location.</p>
+
+      <!-- Search bar row -->
+      <div class="relative max-w-lg">
+
+        <!-- Input + Search button -->
+        <div class="flex gap-2">
+
+          <!-- City name input field -->
+          <div class="relative flex-1">
+            <input type="text" id="cityInput" placeholder="e.g. Bnaglore, Chicago, Seoul..." class="search-input"
+              autocomplete="off" />
+            <!-- Small X button to clear the input -->
+            <button id="clearBtn"
+              class="absolute right-3 top-1/2 -translate-y-1/2 text-sky-300 hover:text-sky-500 font-bold hidden"
+              aria-label="Clear input">✕</button>
+          </div>
+
+          <!-- Search submit button -->
+          <button id="searchBtn" class="btn-primary" aria-label="Search city">
+            Search
+          </button>
+        </div>
+
+        <!-- ============================================
+             RECENT CITIES DROPDOWN
+             ============================================ -->
+        <div id="recentDropdown" class="dropdown-box hidden">
+          <!-- Label -->
+          <p class="text-xs font-black uppercase tracking-widest text-sky-300 px-4 pt-3 pb-1">
+            Recent Searches
+          </p>
+          <!-- City buttons-->
+          <ul id="recentList"></ul>
+        </div>
+
+      </div>
+
+      <!-- Divider between search and location -->
+      <div class="flex items-center gap-3 mt-4 max-w-lg">
+        <span class="flex-1 h-px bg-sky-200"></span>
+        <span class="text-xs text-sky-300 font-bold">or</span>
+        <span class="flex-1 h-px bg-sky-200"></span>
+      </div>
+
+      <!-- Use Current Location button -->
+      <button id="locationBtn" class="btn-location mt-3 flex items-center gap-2" aria-label="Use current location">
+        <span>📍</span>
+        <span>Use My Current Location</span>
+      </button>
+
+    </section>
+    <!-- /SEARCH SECTION -->
+
+
+    <!-- ================================================
+         ERROR BANNER
+         ================================================ -->
+    <div id="errorBanner" class="error-box hidden mb-5 max-w-lg">
+      <span class="text-xl flex-shrink-0">⚠️</span>
+      <div>
+        <p id="errorTitle" class="font-black text-sm"></p>
+        <p id="errorMsg" class="text-xs font-semibold opacity-80 mt-0.5"></p>
+      </div>
+      <!-- Close error button -->
+      <button id="closeErrorBtn" class="ml-auto text-red-400 hover:text-red-600 font-black text-lg"
+        aria-label="Dismiss error">✕</button>
+    </div>
+
+
+    <!-- ================================================
+         EXTREME HEAT ALERT
+         Shown automatically when temperature > 40°C
+         ================================================ -->
+    <div id="heatAlert" class="heat-box hidden mb-5 max-w-lg">
+      <span class="text-2xl flex-shrink-0">🔥</span>
+      <p class="font-black text-sm flex-1">
+        Extreme Heat Alert! Temperature is above 40°C — stay hydrated and avoid direct sun.
+      </p>
+      <button id="closeAlertBtn" class="ml-auto text-orange-400 hover:text-orange-600 font-black text-lg"
+        aria-label="Dismiss alert">✕</button>
+    </div>
+
+
+    <!-- ================================================
+         LOADING SPINNER
+         Shown while fetching data from the API
+         ================================================ -->
+    <div id="loadingSpinner" class="hidden flex-col items-center justify-center py-20 gap-3">
+      <div class="w-10 h-10 rounded-full border-4 border-sky-200 border-t-sky-500 spin"></div>
+      <p class="text-sky-400 text-sm font-bold">Fetching weather...</p>
+    </div>
+
+
+    <!-- ================================================
+         EMPTY STATE
+         Shown before any search has been done
+         ================================================ -->
+    <div id="emptyState" class="text-center py-20">
+      <p class="text-6xl mb-3">🌍</p>
+      <p class="text-sky-400 font-bold text-sm">Search a city to get started</p>
+    </div>
+
+
+    <!-- ================================================
+         WEATHER DISPLAY SECTION
+         Hidden until data is loaded successfully.
+         ================================================ -->
+    <div id="weatherDisplay" class="hidden">
+
+
+      <!-- ==============================================
+           TWO COLUMN LAYOUT
+           Left: Today's card  |  Right: Day-wise list
+           ============================================== -->
+      <div class="flex flex-col md:flex-row gap-5 mb-6">
+
+
+        <!-- ============================================
+             TODAY'S WEATHER CARD
+             Shows city, date, temp, icon, stats
+             ============================================ -->
+        <div class="today-card flex-1 animate-fade-up">
+
+          <!-- Decorative background circle-->
+          <div class="absolute top-0 right-0 w-32 h-32 rounded-full bg-sky-50 opacity-50 -translate-y-8 translate-x-8">
+          </div>
+
+          <!-- City name and date -->
+          <div class="relative z-10">
+            <h2 id="cityName" class="text-2xl font-black text-sky-800"></h2>
+            <p id="todayDate" class="text-xs font-bold text-sky-400 mt-0.5 mb-4"></p>
+          </div>
+
+          <!-- Weather icon + description -->
+          <div class="relative z-10 flex items-center justify-between mb-5">
+            <div>
+              <!-- Big temperature number -->
+              <div class="flex items-end gap-2">
+                <span id="tempValue" class="text-6xl font-black text-sky-700 leading-none"></span>
+                <!-- °C / °F toggle -->
+                <div class="flex rounded-lg overflow-hidden mb-1 border-2 border-sky-200">
+                  <button id="btnC" class="unit-btn active" onclick="setUnit('C')">°C</button>
+                  <button id="btnF" class="unit-btn" onclick="setUnit('F')">°F</button>
+                </div>
+              </div>
+              <!-- Weather condition text -->
+              <p id="weatherDesc" class="text-sm font-bold text-sky-500 capitalize mt-1"></p>
+            </div>
+
+            <!-- Weather icon image from OpenWeatherMap -->
+            <img id="weatherIcon" src="" alt="Weather condition icon" class="w-20 h-20" />
+          </div>
+
+          <!-- Stats row: humidity, wind, feels like, visibility -->
+          <div class="relative z-10 grid grid-cols-2 gap-3">
+
+            <div class="stat-card">
+              <span class="text-xl">💧</span>
+              <div>
+                <p class="text-xs text-sky-400 font-bold">Humidity</p>
+                <p id="humidity" class="text-sm font-black text-sky-700"></p>
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <span class="text-xl">🌬️</span>
+              <div>
+                <p class="text-xs text-sky-400 font-bold">Wind</p>
+                <p id="windSpeed" class="text-sm font-black text-sky-700"></p>
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <span class="text-xl">🌡️</span>
+              <div>
+                <p class="text-xs text-sky-400 font-bold">Feels Like</p>
+                <p id="feelsLike" class="text-sm font-black text-sky-700"></p>
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <span class="text-xl">👁️</span>
+              <div>
+                <p class="text-xs text-sky-400 font-bold">Visibility</p>
+                <p id="visibility" class="text-sm font-black text-sky-700"></p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+        <!-- /TODAY'S CARD -->
+
+
+        <!-- ============================================
+             SIDE PANEL
+             ============================================ -->
+        <div class="md:w-56 flex flex-col gap-3" id="dayPillsContainer">
+        </div>
+
+      </div>
+
+
+      <!-- ==============================================
+           5-DAY FORECAST GRID
+           ============================================== -->
+      <div>
+        <p class="section-label">5-Day Detailed Forecast</p>
+
+        <!--Media Query-->
+        <div id="forecastGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
+        </div>
+      </div>
+
+    </div>
+    <!-- /WEATHER DISPLAY -->
+
+  </main>
+  <!-- /MAIN -->
+
+
+  <!-- ================================================
+       FOOTER
+       ================================================ -->
+  <footer class="text-center py-5 text-xs text-sky-300 font-bold mt-6">
+    Powered by OpenWeatherMap &nbsp;·&nbsp; WeatherWhale
+  </footer>
+
+
+  <!-- ================================================
+       JavaScript
+       ================================================ -->
+  <script src="js/app.js"></script>
+
+</body>
+
+</html>

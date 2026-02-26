@@ -1,0 +1,12 @@
+{
+  "name": "skypulse-weather-app",
+  "version": "1.0.0",
+  "description": "Weather Forecast Application using Tailwind CSS CLI",
+  "scripts": {
+    "build": "tailwindcss -i ./src/input.css -o ./dist/style.css",
+    "watch": "tailwindcss -i ./src/input.css -o ./dist/style.css --watch"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.4.19"
+  }
+}
