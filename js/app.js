@@ -1,18 +1,4 @@
-/* ====================================================
-   app.js — SkyPulse Weather Application
-   All logic: API calls, UI rendering, user interaction
-
-   HOW TO USE:
-   1. Replace YOUR_API_KEY_HERE with your OpenWeatherMap key
-   2. Run `npm run build` to generate dist/style.css
-   3. Open index.html with Live Server (VS Code)
-   ==================================================== */
-
-
-/* ----------------------------------------------------
-   API CONFIGURATION
-   Get your free key at: https://openweathermap.org
-   ---------------------------------------------------- */
+// API KEY
 const API_KEY = 'e4736aaca65a8effda4247be812e3cad'; // <-- Replace this with your actual API key
 
 /* Base URLs for OpenWeatherMap endpoints */
