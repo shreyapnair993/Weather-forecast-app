@@ -345,6 +345,8 @@ function getShortDay(dateStr) {
 }
 
 /* Apply or remove the rainy dark theme on the body */
+/* Changes background to dark rainy theme */
+/* Also shows animated rain overlay on screen */
 function applyRainyTheme(condition) {
   const c = condition.toLowerCase();
   const isRainy = c.includes('rain') || c.includes('drizzle') || c.includes('thunder');
